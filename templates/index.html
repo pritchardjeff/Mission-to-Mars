@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Mission to Mars</title>
     <link
@@ -11,12 +11,12 @@
     />
   </head>
   <body>
-    <div class="container">
+    <div class="container-fluid">
       <!-- Add Jumbotron to Header -->
       <div class="jumbotron text-center">
         <h1>Mission to Mars</h1>
         <!-- Add a button to activate scraping script -->
-        <p><a class="btn btn-primary btn-lg" href="/scrape" role="button">Scrape New Data</a></p>
+        <p><a class="btn btn-primary btn-sm active" href="/scrape" role="button">Scrape New Data</a></p>
       </div>
       <!-- Add section for Mars News -->
       <div class="row" id="mars-news">
@@ -48,6 +48,23 @@
           </div>
         </div>
       </div>
-    </div>
+      <!-- Hemispheres -->
+      <div class="container-fluid">
+      <div class="row">
+        <h1 class="text-center">Hemispheres of Mars</h1>
+        <br>
+      {% for dict in mars.hemisphere_images %}
+          <div class="col-md-6 text-center">
+            <div class="card text-center">
+              <img class="img-responsive" id="scale_id" src="{{ dict.img_jpg }}">
+                <div class="card-body text-center">
+                  <h4 class="card-title text-center">{{ dict.title }}</h4>
+                </div>
+              </div>
+            </div>
+      {% endfor %}
+      </div>
+      </div>
+    
   </body>
 </html>

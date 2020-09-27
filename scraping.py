@@ -18,6 +18,7 @@ def scrape_all():
         "news_paragraph": news_paragraph,
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
+        "hemisphere_images": hemisphere_image_urls(),
         "last_modified": dt.datetime.now()
     }
 
@@ -100,6 +101,67 @@ def mars_facts():
 
     # Convert dataframe into HTML format, add bootstrap
     return df.to_html(classes="table table-striped")
+
+def hemisphere_image_urls():
+    # Visit Url
+    url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+    browser = Browser("chrome", executable_path="chromedriver", headless=True)
+    browser.visit(url)
+
+    hemisphere_image_urls = []
+
+    html = browser.html
+    soup_hemi = soup(html, 'html.parser')
+
+    hemisphere_names = []
+
+    results = soup_hemi.find_all('div', class_="collapsible results")
+    hemispheres = results[0].find_all('h3')
+
+    for name in hemispheres:
+        hemisphere_names.append(name.text)
+
+    # Search for links
+    link_results = results[0].find_all('a')
+    links = []
+
+    for link in link_results:
+        if (link.img):
+            
+            link_url = 'https://astrogeology.usgs.gov/' + link['href']
+            
+            hemisphere_image_urls.append(link_url)
+    
+    img_jpg = []
+
+    for url in hemisphere_image_urls:
+        
+        browser.visit(url)
+        
+        html_sub = browser.html
+        soup_jpg = soup(html_sub, 'html.parser')
+        
+        jpg_image_link = soup_jpg.find_all('img', class_='wide-image')
+        img_path = jpg_image_link[0]['src']
+        
+        img_link = 'https://astrogeology.usgs.gov/' + img_path
+        
+        img_jpg.append(img_link)
+    
+    
+    mars_hemisphere_zip = zip(img_jpg, hemisphere_names)
+
+    hemisphere_image_urls = []
+
+    for img, title in mars_hemisphere_zip:
+        
+        mars_title = {}
+        
+        mars_title['img_jpg'] = img
+        mars_title['title'] = title
+        
+        hemisphere_image_urls.append(mars_title)
+    return hemisphere_image_urls
 
 if __name__ == "__main__":
 
